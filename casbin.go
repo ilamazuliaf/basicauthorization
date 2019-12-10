@@ -59,7 +59,8 @@ func main() {
 	repo := repository.NewRepositoryConfig(db)
 	us := usecase.NewUsecaseConfig(repo, timeOut)
 	delivery.NewHandler(e, us)
-	e.Use(enforcer.Enforce)
+	// e.Use(enforcer.Enforce)
+	e.Use(echo.WrapMiddleware(enforcer.Enforce))
 	e.Use(echo.WrapMiddleware(middlewares.MiddlewareJWTAuthorization))
 
 	e.Logger.Fatal(e.Start(viper.GetString("server.port")))

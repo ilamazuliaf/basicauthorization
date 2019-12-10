@@ -9,7 +9,6 @@ import (
 
 	"github.com/casbin/casbin/v2"
 	"github.com/dgrijalva/jwt-go"
-	"github.com/labstack/echo"
 )
 
 type M map[string]interface{}
@@ -56,38 +55,49 @@ func MiddlewareJWTAuthorization(next http.Handler) http.Handler {
 	})
 }
 
-func (e *Enforcer) Enforce(next echo.HandlerFunc) echo.HandlerFunc {
-	return func(c echo.Context) error {
+func (e *Enforcer) Enforce(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// get url path
-		path := c.Request().URL.Path
+		path := r.URL.Path
 
 		// if url path = /login, skip
 		if path == "/login" {
-			return next(c)
+			next.ServeHTTP(w, r)
+			return
 		}
 
 		// get token from header
-		token := c.Request().Header.Get("x-token")
+		token := r.Header.Get("x-token")
 
 		// get method. POST, GET, PUT, DELETE
-		method := c.Request().Method
+		method := r.Method
 
 		// decode and get role from jwt
 		user, err := decodeToken(token)
 		if err != nil {
-			return c.JSON(http.StatusForbidden, M{"message": err.Error()})
+			w.WriteHeader(http.StatusForbidden)
+			json.NewEncoder(w).Encode(M{
+				"message": err.Error(),
+			})
+			return
 		}
 
 		result, err := e.Enforcer.Enforce(user, path, method)
 		if err != nil {
-			return c.JSON(http.StatusInternalServerError, M{"message": err.Error()})
+			w.WriteHeader(http.StatusInternalServerError)
+			json.NewEncoder(w).Encode(M{
+				"message": err.Error(),
+			})
+			return
 		}
 
 		if result {
-			return next(c)
+			next.ServeHTTP(w, r)
+			return
 		}
-		return c.JSON(http.StatusForbidden, M{"message": "Forbidden"})
-	}
+		w.WriteHeader(http.StatusForbidden)
+		json.NewEncoder(w).Encode(M{"message": "anda tidak memiliki akses"})
+	})
 }
 
 func decodeToken(tokenString string) (string, error) {
