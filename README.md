@@ -9,6 +9,10 @@ go run casbin.go
 go build casbin.go
 casbin.exe or ./casbin
 ```
+#### OS Linux bisa pakai make
+```shell
+make run
+```
 #### Desain Api
 |METHOD|PATH|
 |------|:----|
