@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/casbin/casbin"
+	"github.com/casbin/casbin/v2"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo"
 )

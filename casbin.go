@@ -11,7 +11,7 @@ import (
 
 	"github.com/spf13/viper"
 
-	"github.com/casbin/casbin"
+	"github.com/casbin/casbin/v2"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/labstack/echo"
 )
