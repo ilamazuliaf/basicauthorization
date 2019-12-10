@@ -1,35 +1,60 @@
 ## Instalasi
 
-#### Package
-```bash
-go get -u github.com/labstack/echo/...
-go get github.com/casbin/casbin
-go get github.com/dgrijalva/jwt-go
-go get github.com/go-sql-driver/mysql
-go get github.com/spf13/viper
-```
-
 #### Jalanlan Aplikasi
-```bash
+```golang
 go run casbin.go
 ```
 #### Atau Build
-```bash
+```golang
 go build casbin.go
 casbin.exe or ./casbin
 ```
 #### Desain Api
-```bash
-GET http://localhost:8080/login (All Group)
-GET http://localhost:8080/person (All Group)
-POST http://localhost:8080/person (Admin Only)
-```
-#### User
+|METHOD|PATH|
+|------|:----|
+|GET|/login|
+|GET/POST|/person|
 
+#### User
 |USER|PASSWORD|GRUP|
 |-----|:-----|-----|
 |faiz|faiz|admin|
 |nur|fatimah|user|
+
+#### Database Sederhana
+```sql
+CREATE DATABASE IF NOT EXISTS `casbin`;
+CREATE TABLE `person` (
+  `id` int(11) NOT NULL,
+  `nama` varchar(50) NOT NULL,
+  `alamat` varchar(100) NOT NULL,
+  `umur` int(3) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+INSERT INTO `person` (`id`, `nama`, `alamat`, `umur`) VALUES
+(1, 'Faizul Amaly', 'Kambingan Barat, Madura', 26),
+(2, 'Nur Fatimah', 'Sarasa, Sulawesi Barat', 21);
+
+CREATE TABLE `user` (
+  `username` varchar(25) NOT NULL,
+  `password` varchar(50) NOT NULL,
+  `role` varchar(15) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+INSERT INTO `user` (`username`, `password`, `role`) VALUES
+('faiz', 'faiz', 'admin'),
+('nur', 'fatimah', 'user');
+
+ALTER TABLE `person`
+  ADD PRIMARY KEY (`id`);
+
+ALTER TABLE `user`
+  ADD PRIMARY KEY (`username`);
+
+ALTER TABLE `person`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+COMMIT;
+```
 
 #### Testing
 ```curl
@@ -60,3 +85,4 @@ curl -X POST -H "x-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NzU5NT
 #Response
 {"message":"Forbidden"}
 ```
+
