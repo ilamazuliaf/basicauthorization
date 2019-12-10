@@ -33,7 +33,7 @@ func (m *mysqlConfig) GetUser(ctx context.Context, username, password string) (*
 	if err := m.DB.QueryRowContext(ctx, getUser, username, password).Scan(
 		&user.Username, &user.Password, &user.Role,
 	); err != nil {
-		return nil, err
+		return nil, models.ErrUserNotFound
 	}
 	return user, nil
 }
