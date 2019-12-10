@@ -1,0 +1,21 @@
+{
+    "running":{
+        "debug": true,
+        "status": "DEVELOPMENT"
+    },
+    "server":{
+        "port": ":8080"
+    },
+    "context":{
+        "timeout": 2
+    },
+    "database":{
+        "host":"localhost",
+        "user":"root",
+        "pass":"",
+        "db":"casbin",
+        "maxLifeTime":5,
+        "maxIdleCons":0,
+        "maxOpenCons":10
+    }
+}
